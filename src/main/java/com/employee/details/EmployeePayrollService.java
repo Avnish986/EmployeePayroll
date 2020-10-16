@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.*;
 
 public class EmployeePayrollService {
+	public enum IOService {
+		CONSOLE_IO, FILE_IO, DB_IO, REST_IO
+	}
+
 	private List<EmployeePayrollData> empList;
 
 	public EmployeePayrollService() {
@@ -23,8 +27,11 @@ public class EmployeePayrollService {
 		empList.add(new EmployeePayrollData(id, name, salary));
 	}
 
-	private void writeEmployeePayrollData() {
-		System.out.println("\nWriting Employee Payroll Data to Console\n" + empList);
+	void writeEmployeePayrollData(IOService ioService) {
+		if (ioService.equals(IOService.CONSOLE_IO))
+			System.out.println("\nWriting Payroll to Console\n" + empList);
+		else if (ioService.equals(IOService.FILE_IO))
+			new EmployeePayrollFileIOService().writeData(empList);
 
 	}
 
@@ -33,8 +40,13 @@ public class EmployeePayrollService {
 		EmployeePayrollService empService = new EmployeePayrollService(empList);
 		Scanner consoleInputReader = new Scanner(System.in);
 		empService.readEmployeePayrollData(consoleInputReader);
-		empService.writeEmployeePayrollData();
+		empService.writeEmployeePayrollData(IOService.CONSOLE_IO);
 
+	}
+	public long countEntries(IOService ioService) {
+		if (ioService.equals(IOService.FILE_IO))
+			return new EmployeePayrollFileIOService().countEntries();
+		return 0;
 	}
 
 }
